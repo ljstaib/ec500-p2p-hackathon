@@ -16,7 +16,7 @@ discoveryclient = pymongo.MongoClient('mongodb+srv://Brian:cyp1b1@cluster0.v056q
 discoverydb = discoveryclient['FileDB']
 collection = discoverydb['Users']
 
-collection.find
+#collection.find
 
 
 # Luke running server, remote client
