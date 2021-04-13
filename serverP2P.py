@@ -36,16 +36,16 @@ receiver = input("Whom would you like to talk to? Please choose from the list ab
 receiverDoc = collection.find_one({"Name" : receiver})
 
 #Server starts server on local machine 
-#HOST = ipv4["ip"]
+HOST = ipv4["ip"]
 
 
 #UPDATE SENDER AND RECEIVER TO BE DYNAMIC + LIST ALL MESSAGES
-# pastmessages = db.messages.find({"$or" : [{"$and" : [{"Sender" : Name}, {"Receiver" : receiver}]}, {"$and" : [{"Sender" : receiver },{"Receiver" : Name}]}]})
-# for messages in pastmessages:
-#     print("[", messages["Timestamp"],"] ", messages["Sender"], ": ",messages["Text"] )
+pastmessages = db.messages.find({"$or" : [{"$and" : [{"Sender" : Name}, {"Receiver" : receiver}]}, {"$and" : [{"Sender" : receiver },{"Receiver" : Name}]}]})
+for messages in pastmessages:
+    print("[", messages["Timestamp"],"] ", messages["Sender"], ": ",messages["Text"] )
 
 # Luke running server, remote client
-HOST = '127.0.0.1'
+#HOST = '127.0.0.1'
 PORT = 5000
 
 #Client socket
