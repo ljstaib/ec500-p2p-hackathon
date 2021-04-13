@@ -7,27 +7,52 @@ import socket
 from threading import *
 import pymongo
 import datetime
+import urllib.request, json
 
+#local message storage inits
 client = pymongo.MongoClient('mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb')
 db = client['test']
 
-#discovery
+#discovery inits
 discoveryclient = pymongo.MongoClient('mongodb+srv://Brian:cyp1b1@cluster0.v056q.mongodb.net/FileDB?retryWrites=true&w=majority')
 discoverydb = discoveryclient['FileDB']
 collection = discoverydb['Users']
 
-#collection.find
+#Auto update IP
+ipv4 = json.loads(urllib.request.urlopen("http://ip.jsontest.com/").read())
+print(ipv4["ip"])
 
+Name = input("Who are you?")
+collection.update_one({"Name" : Name}, {"$set" : {"IP" : ipv4["ip"]}})
+
+#Discovery
+#print discoverable users
+friends = collection.find({"Discoverable" : True})
+
+for person in friends:
+    print(person["Name"])
+    
+receiver = input("Whom would you like to talk to? Please choose from the list above:")
+receiverDoc = collection.find_one({"Name" : receiver})
+
+#Server starts server on local machine 
+#HOST = ipv4["ip"]
+
+
+#UPDATE SENDER AND RECEIVER TO BE DYNAMIC + LIST ALL MESSAGES
+# pastmessages = db.messages.find({"$or" : [{"$and" : [{"Sender" : Name}, {"Receiver" : receiver}]}, {"$and" : [{"Sender" : receiver },{"Receiver" : Name}]}]})
+# for messages in pastmessages:
+#     print("[", messages["Timestamp"],"] ", messages["Sender"], ": ",messages["Text"] )
 
 # Luke running server, remote client
-HOST = '155.41.17.114'
+HOST = '127.0.0.1'
 PORT = 5000
-print(db)
+
 #Client socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) #reset tcp server
 s.bind((HOST,PORT))
-
+print("SOCKET BOUND")
 class client(Thread):
 	def __init__(self, socket, address):
 		Thread.__init__(self)
@@ -39,17 +64,25 @@ class client(Thread):
 		print("Running")
 		while True:
 			data = self.s.recv(1024).decode()
-			print('User 1 sent: ', data)
+			print(receiver,' sent: ', data)
 			msg = input('Enter a message: ')
-			self.s.send(msg.encode()) 
+			self.s.send(msg.encode())
+			#save received message
 			db.messages.insert_one(
-    			{
-					"Sender" : "Alice",
-					"Receiver" : "Bob",
+				{
+					"Sender" : receiver,
+					"Receiver" : Name,
 					"Text" : data,
 					"Timestamp" : datetime.datetime.now()
-				}
-)
+				})
+			#save sent message
+			db.messages.insert_one(
+				{
+					"Sender" : Name,
+					"Receiver" : receiver,
+					"Text" : msg,
+					"Timestamp" : datetime.datetime.now()
+				})
 
 s.listen(5)
 
