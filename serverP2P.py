@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 #Adapted from https://stackoverflow.com/questions/21233340/sending-string-via-socket-python for educational purposes
 
-#Luke Staib, ljstaib@bu.edu, 2021
+#Luke Staib, ljstaib@bu.edu
+#Brian Xu, brianxu@bu.edu
+#Rahul Rajaram, rrajaram@bu.edu
+#EC500 P2P Hackathon - Spring 2021
 
 import socket
 from threading import *
