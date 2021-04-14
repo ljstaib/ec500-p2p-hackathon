@@ -1,4 +1,8 @@
-# ec500-p2p-hackaton
+# EC500 P2P Hackathon - Spring 2021
+# Created by:
+- Luke Staib, ljstaib@bu.edu
+- Brian Xu, brianxu@bu.edu
+- Rahul Rajaram, rrajaram@bu.edu
 
 ## Overview
 
